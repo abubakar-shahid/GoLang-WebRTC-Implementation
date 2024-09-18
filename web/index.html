@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pion WebRTC App</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f0f0f0;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      }
+      .container {
+        background-color: white;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        text-align: center;
+      }
+      #join-screen, #participant-view {
+        transition: opacity 0.5s ease-in-out;
+      }
+      #name {
+        padding: 10px;
+        margin: 10px 0;
+        width: 200px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+      }
+      button {
+        padding: 10px 20px;
+        margin: 10px 5px;
+        border: none;
+        border-radius: 5px;
+        background-color: #4CAF50;
+        color: white;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
+      button:hover {
+        background-color: #45a049;
+      }
+      #videos {
+        margin: 20px 0;
+      }
+      #videos video {
+        max-width: 100%;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+      #controls {
+        display: flex;
+        justify-content: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div id="join-screen">
+        <h2>Join Session</h2>
+        <input type="text" id="name" placeholder="Enter your name" />
+        <button id="join-btn"><i class="fas fa-sign-in-alt"></i> Join</button>
+      </div>
+      <div id="participant-view" style="display: none">
+        <div id="videos"></div>
+        <div id="controls">
+          <button id="start-btn"><i class="fas fa-play"></i> Start Recording</button>
+          <button id="stop-btn"><i class="fas fa-stop"></i> Stop Recording</button>
+        </div>
+      </div>
+    </div>
+    <script src="app.js"></script>
+    <script>
+      document.getElementById('join-btn').addEventListener('click', function() {
+        document.getElementById('join-screen').style.opacity = '0';
+        setTimeout(function() {
+          document.getElementById('join-screen').style.display = 'none';
+          document.getElementById('participant-view').style.display = 'block';
+          setTimeout(function() {
+            document.getElementById('participant-view').style.opacity = '1';
+          }, 50);
+        }, 500);
+      });
+    </script>
+  </body>
+</html>
