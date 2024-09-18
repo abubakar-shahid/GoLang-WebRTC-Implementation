@@ -1,0 +1,61 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WebRTC Video Recording</title>
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+      background-color: #fff;
+    }
+    video {
+      width: 320px;
+      height: 240px;
+      border: 1px solid #ccc;
+      margin: 10px;
+    }
+    button {
+      margin: 10px;
+      padding: 10px;
+    }
+  </style>
+</head>
+<body>
+  <video id="peerVideo" autoplay></video>
+  <button id="recordButton">Start Recording</button>
+  <span id="errorMsg"></span>
+  <script src="app.js"></script>
+</body>
+</html> -->
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pion WebRTC App</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div id="join-screen">
+      <input type="text" id="name" placeholder="Enter your name" />
+      <button id="join-btn">Join</button>
+    </div>
+    <div id="participant-view" style="display: none">
+      <div id="videos"></div>
+      <div id="controls">
+        <button id="start-btn">Start Recording</button>
+        <button id="stop-btn">Stop Recording</button>
+      </div>
+    </div>
+    <script src="app.js"></script>
+  </body>
+</html>

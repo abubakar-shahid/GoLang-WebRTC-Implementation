@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebRTC and Media Recording</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        video { display: block; margin: 10px 0; }
+        textarea { width: 100%; height: 100px; }
+        button { margin: 5px; }
+    </style>
+</head>
+<body>
+    <h1>WebRTC and Media Recording Demo</h1>
+
+    <!-- Media Recording Controls -->
+    <div>
+        <button id="start">Start Media Stream</button>
+        <button id="record">Start Recording</button>
+        <button id="play" disabled>Play</button>
+        <button id="download" disabled>Download</button>
+        <select id="codecPreferences"></select>
+        <span id="errorMsg"></span>
+    </div>
+
+    <!-- Video Elements -->
+    <div>
+        <video id="gum" autoplay muted></video>
+        <video id="recorded" controls></video>
+    </div>
+
+    <!-- WebRTC Data Channel Controls -->
+    <div>
+        <button id="startButton" disabled>Start Connection</button>
+        <button id="closeButton" disabled>Close Connection</button>
+        <button id="sendButton" disabled>Send Data</button>
+        <textarea id="dataChannelSend" disabled></textarea>
+        <textarea id="dataChannelReceive" disabled readonly></textarea>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

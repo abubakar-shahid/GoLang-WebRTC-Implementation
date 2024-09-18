@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebRTC Audio Sender</title>
+</head>
+<body>
+    <h1>WebRTC Audio Sender</h1>
+    <button id="startButton">Start Streaming</button>
+    <button id="stopButton" disabled>Stop Streaming</button>
+
+    <script>
+        const startButton = document.getElementById('startButton');
+        const stopButton = document.getElementById('stopButton');
+        const socket = new WebSocket('ws://localhost:3000');
+
+        let localStream;
+        let peerConnection;
+        let mediaRecorder;
+        let recordedChunks = [];
+
+        const servers = {
+            iceServers: [
+                {
+                    urls: 'stun:stun.l.google.com:19302'
+                }
+            ]
+        };
+
+        socket.onopen = () => {
+            console.log('Connected to the signaling server');
+        };
+
+        socket.onmessage = async (event) => {
+            console.log('Received message from signaling server:', event.data);
+            const message = JSON.parse(event.data);
+
+            if (message.type === 'answer') {
+                console.log('Received SDP answer:', message.sdp);
+                const remoteDesc = new RTCSessionDescription(message.sdp);
+                await peerConnection.setRemoteDescription(remoteDesc);
+                console.log('Set remote description with SDP answer');
+            } else if (message.type === 'candidate') {
+                console.log('Received ICE candidate:', message.candidate);
+                try {
+                    await peerConnection.addIceCandidate(new RTCIceCandidate(message.candidate));
+                    console.log('Added ICE candidate successfully');
+                } catch (e) {
+                    console.error('Error adding received ICE candidate', e);
+                }
+            } else {
+                console.log('Received unknown message type:', message.type);
+            }
+        };
+
+        socket.onerror = (error) => {
+            console.error('WebSocket error:', error);
+        };
+
+        startButton.addEventListener('click', async () => {
+            try {
+                localStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                console.log('Microphone access granted');
+                
+                peerConnection = new RTCPeerConnection(servers);
+                console.log('Created RTCPeerConnection');
+
+                peerConnection.oniceconnectionstatechange = () => {
+                    console.log('ICE connection state change:', peerConnection.iceConnectionState);
+                };
+
+                peerConnection.onconnectionstatechange = () => {
+                    console.log('Peer connection state change:', peerConnection.connectionState);
+                };
+
+                peerConnection.onicecandidate = ({ candidate }) => {
+                    if (candidate) {
+                        console.log('Generated ICE candidate:', candidate);
+                        const message = {
+                            type: 'candidate',
+                            candidate: candidate
+                        };
+                        socket.send(JSON.stringify(message));
+                        console.log('Sent ICE candidate to signaling server');
+                    }
+                };
+
+                peerConnection.addTrack(localStream.getTracks()[0], localStream);
+                console.log('Added local audio track to RTCPeerConnection');
+
+                const offer = await peerConnection.createOffer();
+                await peerConnection.setLocalDescription(offer);
+                console.log('Created SDP offer and set local description:', offer);
+                const message = {
+                    type: 'offer',
+                    sdp: peerConnection.localDescription
+                };
+                socket.send(JSON.stringify(message));
+                console.log('Sent SDP offer to signaling server');
+
+                mediaRecorder = new MediaRecorder(localStream);
+                mediaRecorder.ondataavailable = event => {
+                    if (event.data.size > 0) {
+                        recordedChunks.push(event.data);
+                    }
+                };
+
+                mediaRecorder.start();
+                console.log('MediaRecorder started');
+
+                startButton.disabled = true;
+                stopButton.disabled = false;
+
+            } catch (error) {
+                console.error('Error during WebRTC setup:', error);
+                alert('Microphone access is required to start streaming.');
+            }
+        });
+
+        stopButton.addEventListener('click', () => {
+            if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+                mediaRecorder.stop();
+                console.log('MediaRecorder stopped');
+
+                const audioBlob = new Blob(recordedChunks, { type: 'audio/wav' });
+                recordedChunks = [];
+
+                const reader = new FileReader();
+                reader.onload = () => {
+                    const arrayBuffer = reader.result;
+                    const message = {
+                        type: 'audio',
+                        data: arrayBuffer
+                    };
+                    socket.send(JSON.stringify(message));
+                    console.log('Sent recorded audio to signaling server');
+                };
+                reader.readAsArrayBuffer(audioBlob);
+
+                startButton.disabled = false;
+                stopButton.disabled = true;
+            }
+
+            if (peerConnection) {
+                peerConnection.close();
+                console.log('Peer connection closed');
+            }
+        });
+    </script>
+</body>
+</html>
