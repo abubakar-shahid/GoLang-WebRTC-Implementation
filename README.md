@@ -29,7 +29,7 @@ This project explores how WebRTC works by setting up peer-to-peer communication 
 2. Navigate to the project directory:
 
    ```bash
-   cd webrtc-go-project
+   cd GoLang-WebRTC-Implementation
    ```
 
 3. Install Go dependencies:
@@ -38,13 +38,19 @@ This project explores how WebRTC works by setting up peer-to-peer communication 
    go mod tidy
    ```
 
-4. Run the Go server:
+4. Navigate to the Server Directory:
+
+   ```bash
+   cd engine/stream
+   ```
+
+5. Run the Go server:
 
    ```bash
    go run main.go
    ```
 
-5. Open the web interface:
+6. Open the web interface:
    
    Navigate to the web directory and open `index.html` in your browser. Simply double-click the `index.html` file or open it using your browser's "Open File" option.
 
