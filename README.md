@@ -23,7 +23,7 @@ This project explores how WebRTC works by setting up peer-to-peer communication 
 1. Clone this repository:
 
    ```bash
-   git clone https://github.com/your-username/webrtc-go-project.git
+   git clone https://github.com/abubakar-shahid/GoLang-WebRTC-Implementation.git
    ```
 
 2. Navigate to the project directory:
@@ -57,4 +57,4 @@ This project explores how WebRTC works by setting up peer-to-peer communication 
    - Real-time video and audio will be streamed from the web peer to the Go client.
 
 2. Save Media:
-   - When the WebRTC session ends, the Go client will save the streamed audio and video.
+   - When the WebRTC session ends, the Go client will automatically save the streamed audio and video.
